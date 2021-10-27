@@ -21,23 +21,42 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-        await client.connect();
+      await client.connect();
+    console.log("Mongo db connected");
+      const database = client.db("volunteer_network");
+      const volunteerCollection = database.collection("volunteer");
+
+        app.get("/", (req, res) => {
+        // const result = await volunteerCollection.insertOne(doc);
+        // console.log(
+        //   `A document was inserted with the _id: ${result.insertedId}`
+        // );
+        });
+      
+      app.get('/volunteer', async(req, res) => {
+        const cursor = volunteerCollection.find({});
+        const volunteer = await cursor.toArray();
+            res.send(volunteer)
+        })
+
         
-        const database = client.db('volunteer_network');
-        const volunteerCollection = database.collection('volunteer');
+      
+
+        app.post('/', (req, res) => {
+            
+        });
+
         
-        //  Create Documents insert
-        const doc = {
-      title: "First Volunteer",
-      content: "No bytes, no problem. Just insert a document, in MongoDB",
-        }
+        app.put('/', (req,res)=> {
+            
+        })
 
-        const result = await volunteerCollection.insertOne(doc);
-        console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        
+        app.delete('/', (req, res) => {
+            
+        })
 
-        console.log("Mongo db connected");
-
-
+      
     }
     finally {
     //   await  client.close();
