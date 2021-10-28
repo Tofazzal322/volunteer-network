@@ -22,41 +22,44 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
       await client.connect();
-    console.log("Mongo db connected");
+      console.log("Mongo db connected");
       const database = client.db("volunteer_network");
       const volunteerCollection = database.collection("volunteer");
 
-        app.get("/", (req, res) => {
+      app.get("/", (req, res) => {
         // const result = await volunteerCollection.insertOne(doc);
         // console.log(
         //   `A document was inserted with the _id: ${result.insertedId}`
         // );
-        });
-      
-      app.get('/volunteer', async(req, res) => {
+      });
+
+      app.get("/volunteer", async (req, res) => {
         const cursor = volunteerCollection.find({});
         const volunteer = await cursor.toArray();
-            res.send(volunteer)
-        })
+        res.send(volunteer);
+      });
 
-        
+      //  Get single Service
+      app.get("/volunteer/:id", async(req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const singleV = await volunteerCollection.findOne(query);
+        res.json(singleV);
+      });
+
       
-
-        app.post('/', (req, res) => {
-            
+      app.post("/addVolunteer", (req, res) => {
+        console.log(req.body);
+        volunteerCollection.insertOne(req.body).then((documents) => {
+          res.send(documents.insertedId);
         });
-
-        
-        app.put('/', (req,res)=> {
-            
-        })
-
-        
-        app.delete('/', (req, res) => {
-            
-        })
+      });
 
       
+
+      app.put("/", (req, res) => {});
+
+      app.delete("/", (req, res) => {});
     }
     finally {
     //   await  client.close();
